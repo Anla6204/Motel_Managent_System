@@ -164,9 +164,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 👨‍💻 Developer
 
 **ThanhDat** - Software Developer  
-📧 Email: [your.email@example.com]  
-💼 LinkedIn: [Your LinkedIn Profile]  
-🐙 GitHub: [Your GitHub Profile]
+📧 Email: [lnphucan641@gmail.com] 
+🐙 GitHub: [https://github.com/Anla6204]
 
 ## 🙏 Acknowledgments
 
