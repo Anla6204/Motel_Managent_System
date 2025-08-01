@@ -1,0 +1,208 @@
+<UserControl x:Class="AnLaNPWPF.Views.ContractManagementView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="800" d:DesignWidth="1200">
+    
+    <UserControl.Resources>
+        <Style x:Key="ModernButton" TargetType="Button">
+            <Setter Property="Background" Value="#4A90E2"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="15,8"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="5">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#357ABD"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#2E6DA4"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="DangerButton" TargetType="Button" BasedOn="{StaticResource ModernButton}">
+            <Setter Property="Background" Value="#E74C3C"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#C0392B"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="SuccessButton" TargetType="Button" BasedOn="{StaticResource ModernButton}">
+            <Setter Property="Background" Value="#27AE60"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#219A52"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="WarningButton" TargetType="Button" BasedOn="{StaticResource ModernButton}">
+            <Setter Property="Background" Value="#F39C12"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#E67E22"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Background="#F8F9FA">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" Background="White" Padding="20" Margin="10,10,10,5" CornerRadius="8">
+            <!-- Effect="{DynamicResource {x:Static SystemParameters.DropShadowKey}}" -->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <StackPanel Grid.Column="0" Orientation="Vertical">
+                    <TextBlock Text="📋 Quản Lý Hợp Đồng Thuê Phòng" FontSize="24" FontWeight="Bold" 
+                               Foreground="#2C3E50" Margin="0,0,0,5"/>
+                    <TextBlock x:Name="txtSummary" Text="Tổng quan hợp đồng sẽ hiển thị ở đây" 
+                               FontSize="14" Foreground="#7F8C8D"/>
+                </StackPanel>
+
+                <Button Grid.Column="1" x:Name="btnRefresh" Content="🔄 Làm mới" 
+                        Style="{StaticResource ModernButton}" Click="RefreshButton_Click"/>
+            </Grid>
+        </Border>
+
+        <!-- Filter and Search -->
+        <Border Grid.Row="1" Background="White" Padding="15" Margin="10,5,10,5" CornerRadius="8">
+                <!--Effect="{DynamicResource {x:Static SystemParameters.DropShadowKey}}"-->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Orientation="Horizontal">
+                    <TextBlock Text="Lọc theo trạng thái:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                    <ComboBox x:Name="cmbStatusFilter" Width="150" Margin="0,0,15,0" 
+                              SelectionChanged="StatusFilter_Changed">
+                        <ComboBoxItem Content="Tất cả" IsSelected="True" Tag="All"/>
+                        <ComboBoxItem Content="🟡 Chờ xử lý" Tag="Pending"/>
+                        <ComboBoxItem Content="🟢 Đang hiệu lực" Tag="Active"/>
+                        <ComboBoxItem Content="🔴 Hết hạn" Tag="Expired"/>
+                        <ComboBoxItem Content="⚫ Đã chấm dứt" Tag="Terminated"/>
+                    </ComboBox>
+
+                    <TextBlock Text="Tìm kiếm:" VerticalAlignment="Center" Margin="15,0,10,0"/>
+                    <TextBox x:Name="txtSearch" Width="200" Padding="8" 
+                             TextChanged="SearchBox_TextChanged"
+                             ToolTip="Tìm theo số hợp đồng, tên khách hàng hoặc số phòng"/>
+                </StackPanel>
+
+                <Button Grid.Column="1" x:Name="btnAddContract" Content="➕ Tạo Hợp Đồng" 
+                        Style="{StaticResource SuccessButton}" Click="AddContract_Click"/>
+                
+                <Button Grid.Column="2" x:Name="btnExpireContracts" Content="⏰ Cập Nhật Hết Hạn" 
+                        Style="{StaticResource DangerButton}" Click="ExpireContracts_Click"/>
+            </Grid>
+        </Border>
+
+        <!-- Contract List -->
+        <Border Grid.Row="2" Background="White" Margin="10,5,10,5" CornerRadius="8">
+                <!--Effect="{DynamicResource {x:Static SystemParameters.DropShadowKey}}"-->
+            <DataGrid x:Name="dgContracts" AutoGenerateColumns="False" 
+                      CanUserAddRows="False" CanUserDeleteRows="False"
+                      GridLinesVisibility="Horizontal" HeadersVisibility="Column"
+                      Background="White" RowBackground="White" AlternatingRowBackground="#F8F9FA"
+                      BorderThickness="0" SelectionMode="Single"
+                      MouseDoubleClick="ContractGrid_MouseDoubleClick">
+                
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Số HĐ" Binding="{Binding ContractNumber}" Width="120" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Khách hàng" Binding="{Binding CustomerName}" Width="180" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Phòng" Binding="{Binding RoomNumber}" Width="80" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Ngày bắt đầu" Binding="{Binding StartDate, StringFormat=dd/MM/yyyy}" Width="110" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Ngày kết thúc" Binding="{Binding EndDate, StringFormat=dd/MM/yyyy}" Width="110" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Tiền thuê/tháng" Binding="{Binding FormattedMonthlyRent}" Width="130" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Tiền cọc" Binding="{Binding FormattedSecurityDeposit}" Width="120" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Trạng thái" Binding="{Binding StatusText}" Width="140" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Còn lại (ngày)" Binding="{Binding DaysRemaining}" Width="100" IsReadOnly="True"/>
+                    
+                    <DataGridTemplateColumn Header="Thao tác" Width="200">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <Button Content="📝" ToolTip="Chỉnh sửa" Margin="2" Padding="5" 
+                                            Background="#3498DB" Foreground="White" BorderThickness="0"
+                                            Click="EditContract_Click" Tag="{Binding}"/>
+                                    <Button Content="💰" ToolTip="Xem hóa đơn" Margin="2" Padding="5"
+                                            Background="#27AE60" Foreground="White" BorderThickness="0"
+                                            Click="ViewBills_Click" Tag="{Binding}"/>
+                                    <Button Content="🗑️" ToolTip="Xóa" Margin="2" Padding="5"
+                                            Background="#E74C3C" Foreground="White" BorderThickness="0"
+                                            Click="DeleteContract_Click" Tag="{Binding}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+
+                <DataGrid.RowStyle>
+                    <Style TargetType="DataGridRow">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsExpiringSoon}" Value="True">
+                                <Setter Property="Background" Value="#FFF3CD"/>
+                                <Setter Property="Foreground" Value="#856404"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding IsExpired}" Value="True">
+                                <Setter Property="Background" Value="#F8D7DA"/>
+                                <Setter Property="Foreground" Value="#721C24"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.RowStyle>
+            </DataGrid>
+        </Border>
+
+        <!-- Status Bar -->
+        <Border Grid.Row="3" Background="#34495E" Padding="15,10" Margin="10,5,10,10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <StackPanel Grid.Column="0" Orientation="Horizontal">
+                    <TextBlock x:Name="txtStatusInfo" Text="Sẵn sàng" Foreground="White" 
+                               VerticalAlignment="Center" Margin="0,0,20,0"/>
+                    <TextBlock x:Name="txtContractCount" Text="Tổng: 0 hợp đồng" Foreground="#BDC3C7" 
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <TextBlock Text="🟡 Sắp hết hạn" Foreground="#F39C12" Margin="0,0,15,0" VerticalAlignment="Center"/>
+                    <TextBlock Text="🔴 Đã hết hạn" Foreground="#E74C3C" VerticalAlignment="Center"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

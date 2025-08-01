@@ -1,0 +1,220 @@
+<Window x:Class="AnLaNPWPF.Views.RoomDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AnLaNPWPF.Views"
+        mc:Ignorable="d"
+        Title="Thông tin phòng" Height="600" Width="550"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        Background="#F8F9FA">
+    
+    <Window.Resources>
+        <!-- Styles for modern UI -->
+        <Style x:Key="ModernTextBox" TargetType="TextBox">
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="BorderBrush" Value="#DDD"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="6">
+                            <ScrollViewer x:Name="PART_ContentHost"
+                                        Padding="{TemplateBinding Padding}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter Property="BorderBrush" Value="#007ACC"/>
+                                <Setter Property="BorderThickness" Value="2"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ModernComboBox" TargetType="ComboBox">
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="BorderBrush" Value="#DDD"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Height" Value="40"/>
+        </Style>
+
+        <Style x:Key="ModernButton" TargetType="Button">
+            <Setter Property="Padding" Value="20,10"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="6">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Opacity" Value="0.9"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SaveButtonStyle" TargetType="Button" BasedOn="{StaticResource ModernButton}">
+            <Setter Property="Background" Value="#28A745"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+
+        <Style x:Key="CancelButtonStyle" TargetType="Button" BasedOn="{StaticResource ModernButton}">
+            <Setter Property="Background" Value="#6C757D"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+
+        <Style x:Key="LabelStyle" TargetType="Label">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#495057"/>
+            <Setter Property="Margin" Value="0,0,0,5"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="30">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Header -->
+        <Border Grid.Row="0" 
+                Background="#007ACC" 
+                CornerRadius="8,8,0,0" 
+                Margin="0,0,0,20"
+                Padding="20,15">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="📋" FontSize="24" Margin="0,0,10,0"/>
+                <TextBlock x:Name="TitleText" 
+                           Text="Thêm phòng mới" 
+                           FontSize="20" 
+                           FontWeight="Bold" 
+                           Foreground="White"
+                           VerticalAlignment="Center"/>
+            </StackPanel>
+        </Border>
+        
+        <!-- Content -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="0,0,0,20">
+                <!-- Room Number -->
+                <Label Content="Số phòng *" Style="{StaticResource LabelStyle}"/>
+                <TextBox x:Name="RoomNumberTextBox"
+                         Text="{Binding RoomNumber, UpdateSourceTrigger=PropertyChanged}" 
+                         Style="{StaticResource ModernTextBox}"
+                         Margin="0,0,0,15"
+                         ToolTip="Nhập số phòng (ví dụ: P101, A201)"/>
+                
+                <!-- Room Type -->
+                <Label Content="Loại phòng *" Style="{StaticResource LabelStyle}"/>
+                <ComboBox x:Name="RoomTypeComboBox" 
+                          DisplayMemberPath="RoomTypeName"
+                          SelectedValuePath="RoomTypeID"
+                          SelectedValue="{Binding RoomTypeID}"
+                          Style="{StaticResource ModernComboBox}"
+                          Margin="0,0,0,15"
+                          ToolTip="Chọn loại phòng"/>
+                
+                <!-- Room Price -->
+                <Label Content="Giá phòng/tháng (VNĐ) *" Style="{StaticResource LabelStyle}"/>
+                <TextBox x:Name="RoomPriceTextBox"
+                         Text="{Binding RoomPricePerMonth, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:N0}}" 
+                         Style="{StaticResource ModernTextBox}"
+                         Margin="0,0,0,15"
+                         ToolTip="Nhập giá phòng theo tháng"/>
+                
+                <!-- Room Capacity -->
+                <Label Content="Sức chứa tối đa *" Style="{StaticResource LabelStyle}"/>
+                <ComboBox x:Name="CapacityComboBox"
+                          SelectedValue="{Binding RoomMaxCapacity}"
+                          SelectedValuePath="Tag"
+                          Style="{StaticResource ModernComboBox}"
+                          Margin="0,0,0,15"
+                          ToolTip="Chọn số người tối đa">
+                    <ComboBoxItem Content="1 người" Tag="1"/>
+                    <ComboBoxItem Content="2 người" Tag="2"/>
+                    <ComboBoxItem Content="3 người" Tag="3"/>
+                    <ComboBoxItem Content="4 người" Tag="4"/>
+                    <ComboBoxItem Content="5 người" Tag="5"/>
+                    <ComboBoxItem Content="6 người" Tag="6"/>
+                </ComboBox>
+                
+                <!-- Room Status -->
+                <Label Content="Trạng thái phòng *" Style="{StaticResource LabelStyle}"/>
+                <ComboBox x:Name="StatusComboBox"
+                          SelectedValue="{Binding RoomStatus}"
+                          SelectedValuePath="Tag"
+                          Style="{StaticResource ModernComboBox}"
+                          Margin="0,0,0,15"
+                          ToolTip="Chọn trạng thái phòng">
+                    <ComboBoxItem Content="🏠 Sẵn sàng cho thuê" Tag="0"/>
+                    <ComboBoxItem Content="🏡 Đang được thuê" Tag="1"/>
+                    <ComboBoxItem Content="🔧 Đang bảo trì" Tag="2"/>
+                </ComboBox>
+                
+                <!-- Room Description -->
+                <Label Content="Mô tả phòng" Style="{StaticResource LabelStyle}"/>
+                <TextBox x:Name="DescriptionTextBox"
+                         Text="{Binding RoomDetailDescription, UpdateSourceTrigger=PropertyChanged}"
+                         Style="{StaticResource ModernTextBox}"
+                         Height="80"
+                         TextWrapping="Wrap"
+                         AcceptsReturn="True"
+                         VerticalScrollBarVisibility="Auto"
+                         Margin="0,0,0,15"
+                         ToolTip="Mô tả chi tiết về phòng (tùy chọn)"/>
+            </StackPanel>
+        </ScrollViewer>
+        
+        <!-- Buttons -->
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            
+            <TextBlock Grid.Column="0" 
+                       Text="* Thông tin bắt buộc" 
+                       FontStyle="Italic" 
+                       Foreground="#6C757D"
+                       VerticalAlignment="Center"/>
+            
+            <Button x:Name="SaveButton" 
+                    Grid.Column="1"
+                    Content="💾 Lưu" 
+                    Width="120" 
+                    Margin="0,0,15,0" 
+                    Click="SaveButton_Click"
+                    Style="{StaticResource SaveButtonStyle}"/>
+            
+            <Button x:Name="CancelButton" 
+                    Grid.Column="2"
+                    Content="❌ Hủy" 
+                    Width="120" 
+                    IsCancel="True"
+                    Style="{StaticResource CancelButtonStyle}"/>
+        </Grid>
+    </Grid>
+</Window> 

@@ -1,0 +1,232 @@
+<Window x:Class="AnLaNPWPF.Views.BillDetailDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Chi Tiết Hóa Đơn" Height="600" Width="500"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize">
+    
+    <Window.Resources>
+        <Style x:Key="HeaderTextStyle" TargetType="TextBlock">
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Foreground" Value="#2C3E50"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+        </Style>
+        
+        <Style x:Key="SectionHeaderStyle" TargetType="TextBlock">
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Foreground" Value="#495057"/>
+            <Setter Property="Margin" Value="0,10,0,5"/>
+        </Style>
+        
+        <Style x:Key="LabelStyle" TargetType="TextBlock">
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="0,5,10,5"/>
+        </Style>
+        
+        <Style x:Key="ValueStyle" TargetType="TextBlock">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="0,5"/>
+            <Setter Property="TextAlignment" Value="Right"/>
+        </Style>
+    </Window.Resources>
+    
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,20">
+            <TextBlock Text="CHI TIẾT HÓA ĐƠN" Style="{StaticResource HeaderTextStyle}"/>
+            <TextBlock x:Name="txtBillTitle" Style="{StaticResource HeaderTextStyle}" 
+                       FontSize="14" Foreground="#6C757D" Margin="0,5,0,0"/>
+        </StackPanel>
+        
+        <!-- Content -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <!-- Contract Info -->
+                <Border Background="#F8F9FA" Padding="15" CornerRadius="8" Margin="0,0,0,15">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <TextBlock Grid.Row="0" Grid.ColumnSpan="2" Text="THÔNG TIN HỢP ĐỒNG" 
+                                   Style="{StaticResource SectionHeaderStyle}"/>
+                        
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Số hợp đồng:" Style="{StaticResource LabelStyle}"/>
+                        <TextBlock Grid.Row="1" Grid.Column="1" x:Name="txtContractNumber" Style="{StaticResource ValueStyle}"/>
+                        
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Khách hàng:" Style="{StaticResource LabelStyle}"/>
+                        <TextBlock Grid.Row="2" Grid.Column="1" x:Name="txtCustomerName" Style="{StaticResource ValueStyle}"/>
+                        
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Phòng:" Style="{StaticResource LabelStyle}"/>
+                        <TextBlock Grid.Row="3" Grid.Column="1" x:Name="txtRoomNumber" Style="{StaticResource ValueStyle}"/>
+                    </Grid>
+                </Border>
+                
+                <!-- Bill Period -->
+                <Border Background="#E3F2FD" Padding="15" CornerRadius="8" Margin="0,0,0,15">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <TextBlock Grid.Row="0" Grid.ColumnSpan="2" Text="KỲ HÓA ĐƠN" 
+                                   Style="{StaticResource SectionHeaderStyle}"/>
+                        
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Tháng/Năm:" Style="{StaticResource LabelStyle}"/>
+                        <TextBlock Grid.Row="1" Grid.Column="1" x:Name="txtBillPeriod" Style="{StaticResource ValueStyle}" FontWeight="Bold"/>
+                    </Grid>
+                </Border>
+                
+                <!-- Cost Breakdown -->
+                <Border Background="White" BorderBrush="#DEE2E6" BorderThickness="1" 
+                        Padding="15" CornerRadius="8" Margin="0,0,0,15">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <TextBlock Grid.Row="0" Grid.ColumnSpan="2" Text="CHI TIẾT PHÍ" 
+                                   Style="{StaticResource SectionHeaderStyle}"/>
+                        
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Tiền phòng:" Style="{StaticResource LabelStyle}"/>
+                        <TextBlock Grid.Row="1" Grid.Column="1" x:Name="txtRoomRent" Style="{StaticResource ValueStyle}"/>
+                        
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Điện:" Style="{StaticResource LabelStyle}"/>
+                        <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Right">
+                            <TextBlock x:Name="txtElectricityUsage" Style="{StaticResource ValueStyle}" FontSize="12" Foreground="#6C757D"/>
+                            <TextBlock x:Name="txtElectricityCost" Style="{StaticResource ValueStyle}"/>
+                        </StackPanel>
+                        
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Nước:" Style="{StaticResource LabelStyle}"/>
+                        <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Right">
+                            <TextBlock x:Name="txtWaterUsage" Style="{StaticResource ValueStyle}" FontSize="12" Foreground="#6C757D"/>
+                            <TextBlock x:Name="txtWaterCost" Style="{StaticResource ValueStyle}"/>
+                        </StackPanel>
+                        
+                        <TextBlock Grid.Row="4" Grid.Column="0" Text="Phí khác:" Style="{StaticResource LabelStyle}"/>
+                        <TextBlock Grid.Row="4" Grid.Column="1" x:Name="txtOtherCharges" Style="{StaticResource ValueStyle}"/>
+                        
+                        <Separator Grid.Row="5" Grid.ColumnSpan="2" Margin="0,10"/>
+                        
+                        <TextBlock Grid.Row="6" Grid.Column="0" Text="TỔNG CỘNG:" Style="{StaticResource LabelStyle}" FontWeight="Bold" FontSize="14"/>
+                        <TextBlock Grid.Row="6" Grid.Column="1" x:Name="txtTotalAmount" Style="{StaticResource ValueStyle}" 
+                                   FontWeight="Bold" FontSize="16" Foreground="#DC3545"/>
+                    </Grid>
+                </Border>
+                
+                <!-- Payment Status -->
+                <Border Background="#FFF3CD" Padding="15" CornerRadius="8" Margin="0,0,0,15">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <TextBlock Grid.Row="0" Grid.ColumnSpan="2" Text="TRẠNG THÁI THANH TOÁN" 
+                                   Style="{StaticResource SectionHeaderStyle}"/>
+                        
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Trạng thái:" Style="{StaticResource LabelStyle}"/>
+                        <TextBlock Grid.Row="1" Grid.Column="1" x:Name="txtBillStatus" Style="{StaticResource ValueStyle}" FontWeight="Bold"/>
+                        
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Hạn thanh toán:" Style="{StaticResource LabelStyle}"/>
+                        <TextBlock Grid.Row="2" Grid.Column="1" x:Name="txtDueDate" Style="{StaticResource ValueStyle}"/>
+                        
+                        <StackPanel Grid.Row="3" Grid.ColumnSpan="2" x:Name="pnlPaidInfo" Visibility="Collapsed">
+                            <Grid Margin="0,5,0,0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Ngày thanh toán:" Style="{StaticResource LabelStyle}"/>
+                                <TextBlock Grid.Row="0" Grid.Column="1" x:Name="txtPaidDate" Style="{StaticResource ValueStyle}"/>
+                                
+                                <TextBlock Grid.Row="1" Grid.Column="0" Text="Số tiền đã TT:" Style="{StaticResource LabelStyle}"/>
+                                <TextBlock Grid.Row="1" Grid.Column="1" x:Name="txtPaidAmount" Style="{StaticResource ValueStyle}" FontWeight="Bold" Foreground="#28A745"/>
+                            </Grid>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+                
+                <!-- Timestamps -->
+                <Border Background="#F1F3F4" Padding="15" CornerRadius="8">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <TextBlock Grid.Row="0" Grid.ColumnSpan="2" Text="THÔNG TIN HỆ THỐNG" 
+                                   Style="{StaticResource SectionHeaderStyle}"/>
+                        
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Ngày tạo:" Style="{StaticResource LabelStyle}"/>
+                        <TextBlock Grid.Row="1" Grid.Column="1" x:Name="txtCreatedAt" Style="{StaticResource ValueStyle}"/>
+                        
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Cập nhật cuối:" Style="{StaticResource LabelStyle}"/>
+                        <TextBlock Grid.Row="2" Grid.Column="1" x:Name="txtUpdatedAt" Style="{StaticResource ValueStyle}"/>
+                    </Grid>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+        
+        <!-- Buttons -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" 
+                    Margin="0,20,0,0">
+            <Button Content="🖨️ In hóa đơn" Click="PrintButton_Click" 
+                    Background="#28A745" Foreground="White" Padding="15,8" 
+                    Margin="0,0,10,0" BorderThickness="0"/>
+            <Button Content="✏️ Cập nhật TT" Click="UpdateStatusButton_Click" 
+                    Background="#007BFF" Foreground="White" Padding="15,8" 
+                    Margin="0,0,10,0" BorderThickness="0"/>
+            <Button Content="❌ Đóng" Click="CloseButton_Click" 
+                    Background="#6C757D" Foreground="White" Padding="15,8" 
+                    BorderThickness="0"/>
+        </StackPanel>
+    </Grid>
+</Window>

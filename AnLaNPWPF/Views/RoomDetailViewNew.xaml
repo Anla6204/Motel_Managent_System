@@ -1,0 +1,226 @@
+<Window x:Class="AnLaNPWPF.Views.RoomDetailView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AnLaNPWPF.Views"
+        mc:Ignorable="d"
+        Title="Chi tiết phòng và khách hàng" Height="700" Width="1200"
+        WindowStartupLocation="CenterOwner"
+        Background="#f8f9fa">
+
+    <Window.Resources>
+        <!-- Styles -->
+        <Style x:Key="CardStyle" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Padding" Value="20"/>
+            <Setter Property="Margin" Value="10"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="15" ShadowDepth="5" Opacity="0.1"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SectionHeaderStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="#2c3e50"/>
+            <Setter Property="Margin" Value="0,0,0,15"/>
+        </Style>
+
+        <Style x:Key="DetailLabelStyle" TargetType="TextBlock">
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,5,10,5"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Foreground" Value="#34495e"/>
+        </Style>
+
+        <Style x:Key="DetailValueStyle" TargetType="TextBlock">
+            <Setter Property="Margin" Value="0,5,0,5"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="Foreground" Value="#2c3e50"/>
+        </Style>
+
+        <Style x:Key="CustomerCardStyle" TargetType="Border">
+            <Setter Property="Background" Value="#f8f9fa"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="15"/>
+            <Setter Property="Margin" Value="0,5,0,10"/>
+            <Setter Property="BorderBrush" Value="#e9ecef"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+
+        <Style x:Key="ActionButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#3498db"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Opacity" Value="0.9"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" Background="#3498db" Padding="20">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="🏠" FontSize="32" VerticalAlignment="Center" Margin="0,0,15,0"/>
+                <StackPanel>
+                    <TextBlock Text="CHI TIẾT PHÒNG VÀ KHÁCH HÀNG" 
+                               FontSize="24" FontWeight="Bold" 
+                               Foreground="White"/>
+                    <TextBlock x:Name="txtRoomHeader" 
+                               FontSize="16" 
+                               Foreground="#ecf0f1" 
+                               Margin="0,5,0,0"/>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <!-- Content -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="2*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Room Information -->
+                <StackPanel Grid.Column="0">
+                    <Border Style="{StaticResource CardStyle}">
+                        <StackPanel>
+                            <TextBlock Text="🏨 THÔNG TIN PHÒNG" Style="{StaticResource SectionHeaderStyle}"/>
+                            
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="120"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Số phòng:" Style="{StaticResource DetailLabelStyle}"/>
+                                <TextBlock Grid.Row="0" Grid.Column="1" x:Name="txtRoomNumber" Style="{StaticResource DetailValueStyle}" FontWeight="Bold" FontSize="16"/>
+
+                                <TextBlock Grid.Row="1" Grid.Column="0" Text="Loại phòng:" Style="{StaticResource DetailLabelStyle}"/>
+                                <TextBlock Grid.Row="1" Grid.Column="1" x:Name="txtRoomType" Style="{StaticResource DetailValueStyle}"/>
+
+                                <TextBlock Grid.Row="2" Grid.Column="0" Text="Trạng thái:" Style="{StaticResource DetailLabelStyle}"/>
+                                <TextBlock Grid.Row="2" Grid.Column="1" x:Name="txtRoomStatus" Style="{StaticResource DetailValueStyle}"/>
+
+                                <TextBlock Grid.Row="3" Grid.Column="0" Text="Giá thuê:" Style="{StaticResource DetailLabelStyle}"/>
+                                <TextBlock Grid.Row="3" Grid.Column="1" x:Name="txtRoomPrice" Style="{StaticResource DetailValueStyle}" FontWeight="SemiBold" Foreground="#e74c3c"/>
+
+                                <TextBlock Grid.Row="4" Grid.Column="0" Text="Sức chứa:" Style="{StaticResource DetailLabelStyle}"/>
+                                <TextBlock Grid.Row="4" Grid.Column="1" x:Name="txtRoomCapacity" Style="{StaticResource DetailValueStyle}"/>
+
+                                <TextBlock Grid.Row="5" Grid.Column="0" Text="Đang ở:" Style="{StaticResource DetailLabelStyle}"/>
+                                <TextBlock Grid.Row="5" Grid.Column="1" x:Name="txtCurrentOccupancy" Style="{StaticResource DetailValueStyle}" FontWeight="SemiBold" Foreground="#3498db"/>
+
+                                <TextBlock Grid.Row="6" Grid.Column="0" Text="Mô tả:" Style="{StaticResource DetailLabelStyle}"/>
+                                <TextBlock Grid.Row="6" Grid.Column="1" x:Name="txtRoomDescription" Style="{StaticResource DetailValueStyle}"/>
+                            </Grid>
+
+                            <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
+                                <Button x:Name="btnEditRoom" Content="✏️ Chỉnh sửa phòng" 
+                                        Background="#f39c12" Foreground="White"
+                                        Margin="0,0,10,0" Click="EditRoom_Click"
+                                        Style="{StaticResource ActionButtonStyle}"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <!-- Customer Information -->
+                <StackPanel Grid.Column="1">
+                    <Border Style="{StaticResource CardStyle}" x:Name="CustomerCard">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="👥 DANH SÁCH KHÁCH HÀNG" Style="{StaticResource SectionHeaderStyle}"/>
+                                <TextBlock x:Name="txtOccupancyInfo" 
+                                           Style="{StaticResource DetailValueStyle}" 
+                                           Foreground="#e67e22" 
+                                           FontWeight="SemiBold"
+                                           Margin="15,0,0,0"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+                            
+                            <!-- Customer List -->
+                            <ScrollViewer x:Name="CustomerScrollViewer" MaxHeight="500" VerticalScrollBarVisibility="Auto" Margin="0,10,0,0">
+                                <StackPanel x:Name="CustomerListPanel">
+                                    <!-- Customer cards will be added dynamically -->
+                                </StackPanel>
+                            </ScrollViewer>
+                            
+                            <!-- No customers message -->
+                            <StackPanel x:Name="NoCustomersPanel" Visibility="Collapsed">
+                                <Border Background="#ecf0f1" CornerRadius="8" Padding="20" Margin="0,10,0,0">
+                                    <StackPanel HorizontalAlignment="Center">
+                                        <TextBlock Text="🏠" FontSize="48" HorizontalAlignment="Center" Foreground="#bdc3c7"/>
+                                        <TextBlock Text="Phòng trống" 
+                                                   FontSize="18" 
+                                                   FontWeight="SemiBold"
+                                                   HorizontalAlignment="Center" 
+                                                   Foreground="#7f8c8d" 
+                                                   Margin="0,10,0,0"/>
+                                        <TextBlock Text="Hiện tại chưa có khách hàng nào đang ở phòng này" 
+                                                   FontSize="14" 
+                                                   HorizontalAlignment="Center" 
+                                                   Foreground="#95a5a6" 
+                                                   TextWrapping="Wrap"
+                                                   TextAlignment="Center"/>
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
+
+        <!-- Footer -->
+        <Border Grid.Row="2" Background="#34495e" Padding="15">
+            <Button Content="❌ Đóng" 
+                    HorizontalAlignment="Right" 
+                    Background="#e74c3c" 
+                    Foreground="White"
+                    Padding="20,10"
+                    FontSize="14"
+                    FontWeight="SemiBold"
+                    Click="Close_Click"
+                    Style="{StaticResource ActionButtonStyle}"/>
+        </Border>
+    </Grid>
+</Window>

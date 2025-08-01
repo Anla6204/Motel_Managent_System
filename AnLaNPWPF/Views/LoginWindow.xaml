@@ -1,0 +1,243 @@
+﻿<Window x:Class="AnLaNPWPF.Views.LoginWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AnLaNPWPF.Views"
+        mc:Ignorable="d"
+        Title="Motel 72A - Đăng nhập" Height="600" Width="800"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent">
+    
+    <Window.Resources>
+        <!-- Gradient Brushes -->
+        <LinearGradientBrush x:Key="BackgroundGradient" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#667eea" Offset="0"/>
+            <GradientStop Color="#764ba2" Offset="1"/>
+        </LinearGradientBrush>
+        
+        <LinearGradientBrush x:Key="ButtonGradient" StartPoint="0,0" EndPoint="1,0">
+            <GradientStop Color="#667eea" Offset="0"/>
+            <GradientStop Color="#764ba2" Offset="1"/>
+        </LinearGradientBrush>
+        
+        <!-- Styles -->
+        <Style x:Key="ModernTextBox" TargetType="TextBox">
+            <Setter Property="Height" Value="45"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Padding" Value="15,12"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="BorderBrush" Value="#E0E0E0"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="#333"/>
+            <Style.Triggers>
+                <Trigger Property="IsFocused" Value="True">
+                    <Setter Property="BorderBrush" Value="{StaticResource ButtonGradient}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        
+        <Style x:Key="ModernPasswordBox" TargetType="PasswordBox">
+            <Setter Property="Height" Value="45"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Padding" Value="15,12"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="BorderBrush" Value="#E0E0E0"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="#333"/>
+            <Style.Triggers>
+                <Trigger Property="IsFocused" Value="True">
+                    <Setter Property="BorderBrush" Value="{StaticResource ButtonGradient}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        
+        <Style x:Key="ModernButton" TargetType="Button">
+            <Setter Property="Height" Value="50"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="{StaticResource ButtonGradient}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="25"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                BorderBrush="{TemplateBinding BorderBrush}">
+                            <Border.Effect>
+                                <DropShadowEffect Color="Black" Direction="270" BlurRadius="15" Opacity="0.3" ShadowDepth="5"/>
+                            </Border.Effect>
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Opacity" Value="0.9"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="RenderTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform ScaleX="0.98" ScaleY="0.98"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    
+    <Border Background="{StaticResource BackgroundGradient}" CornerRadius="15">
+        <Border.Effect>
+            <DropShadowEffect Color="Black" Direction="270" BlurRadius="20" Opacity="0.4" ShadowDepth="10"/>
+        </Border.Effect>
+        
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="400"/>
+            </Grid.ColumnDefinitions>
+            
+            <!-- Left Side - Welcome Section -->
+            <Grid Grid.Column="0">
+                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="40">
+                    <!-- Hotel Icon using FontAwesome style -->
+                    <Border Width="120" Height="120" 
+                            Background="White" 
+                            CornerRadius="60"
+                            Margin="0,0,0,30"
+                            Opacity="0.9">
+                        <Border.Effect>
+                            <DropShadowEffect Color="Black" Direction="270" BlurRadius="10" Opacity="0.3" ShadowDepth="5"/>
+                        </Border.Effect>
+                        <TextBlock Text="🏨" 
+                                   FontSize="60"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"/>
+                    </Border>
+                    
+                    <TextBlock Text="THÀNH ĐẠT" 
+                               FontSize="42" 
+                               FontWeight="Bold" 
+                               Foreground="White" 
+                               HorizontalAlignment="Center"
+                               Margin="0,0,0,15">
+                        <TextBlock.Effect>
+                            <DropShadowEffect Color="Black" Direction="270" BlurRadius="5" Opacity="0.3" ShadowDepth="3"/>
+                        </TextBlock.Effect>
+                    </TextBlock>
+
+                    <TextBlock Text="3636" 
+                               FontSize="42" 
+                               FontWeight="Bold" 
+                               Foreground="White" 
+                               HorizontalAlignment="Center"
+                               Margin="0,0,0,15">
+                        <TextBlock.Effect>
+                            <DropShadowEffect Color="Black" Direction="270" BlurRadius="5" Opacity="0.3" ShadowDepth="3"/>
+                        </TextBlock.Effect>
+                    </TextBlock>
+
+
+
+
+                    <TextBlock Text="Hệ thống quản lý nhà trọ hiện đại" 
+                               FontSize="18" 
+                               Foreground="White" 
+                               HorizontalAlignment="Center"
+                               Opacity="0.9"
+                               TextWrapping="Wrap"
+                               TextAlignment="Center"/>
+                </StackPanel>
+            </Grid>
+            
+            <!-- Right Side - Login Form -->
+            <Border Grid.Column="1" 
+                    Background="White" 
+                    CornerRadius="15,0,0,15"
+                    Margin="0,0,0,0">
+                <Border.Effect>
+                    <DropShadowEffect Color="Black" Direction="180" BlurRadius="10" Opacity="0.1" ShadowDepth="0"/>
+                </Border.Effect>
+                
+                <Grid>
+                    <!-- Close Button -->
+                    <Button Content="✕" 
+                            HorizontalAlignment="Right" 
+                            VerticalAlignment="Top"
+                            Width="40" Height="40"
+                            Margin="10"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            FontSize="18"
+                            Foreground="#999"
+                            Cursor="Hand"
+                            Click="CloseButton_Click"/>
+                    
+                    <StackPanel VerticalAlignment="Center" Margin="50,0">
+                        <!-- Title -->
+                        <TextBlock Text="Đăng nhập" 
+                                   FontSize="32" 
+                                   FontWeight="Bold" 
+                                   Foreground="#333"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,0,0,10"/>
+                        
+                        <TextBlock Text="Chào mừng trở lại!" 
+                                   FontSize="14" 
+                                   Foreground="#666"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,0,0,40"/>
+                        
+                        <!-- Email Field -->
+                        <TextBlock Text="Tài khoản" 
+                                   FontSize="14" 
+                                   FontWeight="Medium"
+                                   Foreground="#555"
+                                   Margin="0,0,0,8"/>
+                        <Border CornerRadius="8" Margin="0,0,0,20">
+                            <Border.Effect>
+                                <DropShadowEffect Color="Black" Direction="270" BlurRadius="8" Opacity="0.1" ShadowDepth="2"/>
+                            </Border.Effect>
+                            <TextBox Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}" 
+                                     Style="{StaticResource ModernTextBox}"/>
+                        </Border>
+                        
+                        <!-- Password Field -->
+                        <TextBlock Text="Mật khẩu" 
+                                   FontSize="14" 
+                                   FontWeight="Medium"
+                                   Foreground="#555"
+                                   Margin="0,0,0,8"/>
+                        <Border CornerRadius="8" Margin="0,0,0,30">
+                            <Border.Effect>
+                                <DropShadowEffect Color="Black" Direction="270" BlurRadius="8" Opacity="0.1" ShadowDepth="2"/>
+                            </Border.Effect>
+                            <PasswordBox x:Name="PasswordBox" 
+                                         Style="{StaticResource ModernPasswordBox}"/>
+                        </Border>
+                        
+                        <!-- Login Button -->
+                        <Button Content="ĐĂNG NHẬP" 
+                                Command="{Binding LoginCommand}" 
+                                Style="{StaticResource ModernButton}"
+                                Margin="0,0,0,20"/>
+                        
+                        <!-- Footer -->
+                        <TextBlock Text="© 2025 Motel Thành Đạt 3636 Management System" 
+                                   FontSize="12" 
+                                   Foreground="#999"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,30,0,0" Width="284"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+    </Border>
+</Window>

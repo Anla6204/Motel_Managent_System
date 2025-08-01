@@ -1,0 +1,142 @@
+<UserControl x:Class="AnLaNPWPF.Views.ContractBillViewDialog"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="900">
+    
+    <UserControl.Resources>
+        <!-- Button Styles -->
+        <Style x:Key="PrimaryButton" TargetType="Button">
+            <Setter Property="Background" Value="#007BFF"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="15,10"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="6">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#0056B3"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#004085"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SuccessButton" TargetType="Button" BasedOn="{StaticResource PrimaryButton}">
+            <Setter Property="Background" Value="#28A745"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#218838"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#1E7E34"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="SecondaryButton" TargetType="Button" BasedOn="{StaticResource PrimaryButton}">
+            <Setter Property="Background" Value="#6C757D"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#5A6268"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#545B62"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Background="White">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" Background="#F8F9FA" Padding="20" BorderBrush="#DEE2E6" BorderThickness="0,0,0,1">
+            <StackPanel>
+                <TextBlock x:Name="txtTitle" Text="Danh sách hóa đơn của hợp đồng" 
+                           FontSize="20" FontWeight="Bold" Foreground="#495057"/>
+                <TextBlock x:Name="txtContractInfo" Text="Hợp đồng: [Contract Info]" 
+                           FontSize="14" Foreground="#6C757D" Margin="0,5,0,0"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Bills DataGrid -->
+        <Border Grid.Row="1" Margin="20" BorderBrush="#DEE2E6" BorderThickness="1">
+            <DataGrid x:Name="dgBills" AutoGenerateColumns="False" 
+                      CanUserAddRows="False" CanUserDeleteRows="False" 
+                      CanUserReorderColumns="True" CanUserResizeColumns="True"
+                      GridLinesVisibility="Horizontal" HeadersVisibility="Column"
+                      Background="White" AlternatingRowBackground="#F8F9FA"
+                      RowHeight="35" FontSize="12">
+                
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Mã hóa đơn" Binding="{Binding BillId}" Width="100" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Tháng/Năm" Binding="{Binding BillPeriod}" Width="100" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Tiền phòng" Binding="{Binding FormattedRoomCharge}" Width="120" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Tiền điện" Binding="{Binding FormattedElectricityCharge}" Width="120" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Tiền nước" Binding="{Binding FormattedWaterCharge}" Width="120" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Phí khác" Binding="{Binding FormattedOtherCharges}" Width="120" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Tổng tiền" Binding="{Binding FormattedTotalAmount}" Width="130" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Trạng thái" Binding="{Binding PaymentStatusText}" Width="100" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Ngày tạo" Binding="{Binding CreatedDate, StringFormat=dd/MM/yyyy}" Width="100" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Ngày thanh toán" Binding="{Binding PaidDate, StringFormat=dd/MM/yyyy}" Width="120" IsReadOnly="True"/>
+                </DataGrid.Columns>
+                
+                <DataGrid.RowStyle>
+                    <Style TargetType="DataGridRow">
+                        <Setter Property="Background" Value="White"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#E3F2FD"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.RowStyle>
+            </DataGrid>
+        </Border>
+
+        <!-- Action Buttons -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="20,10">
+            <Button x:Name="btnExportExcel" Content="📊 Xuất Excel" Style="{StaticResource SuccessButton}"
+                    Click="ExportExcel_Click" ToolTip="Xuất danh sách hóa đơn ra file Excel"/>
+            <Button x:Name="btnRefresh" Content="🔄 Làm mới" Style="{StaticResource PrimaryButton}"
+                    Click="Refresh_Click" ToolTip="Làm mới danh sách hóa đơn"/>
+            <Button x:Name="btnClose" Content="❌ Đóng" Style="{StaticResource SecondaryButton}"
+                    Click="Close_Click" ToolTip="Đóng cửa sổ"/>
+        </StackPanel>
+
+        <!-- Status Bar -->
+        <Border Grid.Row="3" Background="#F8F9FA" Padding="15,10" BorderBrush="#DEE2E6" BorderThickness="0,1,0,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <TextBlock x:Name="txtStatusInfo" Grid.Column="0" Text="Sẵn sàng" 
+                           FontSize="12" Foreground="#6C757D" VerticalAlignment="Center"/>
+                
+                <TextBlock x:Name="txtBillCount" Grid.Column="1" Text="Tổng: 0 hóa đơn" 
+                           FontSize="12" Foreground="#6C757D" VerticalAlignment="Center"/>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

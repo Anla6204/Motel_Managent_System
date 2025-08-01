@@ -1,0 +1,210 @@
+<Window x:Class="AnLaNPWPF.Views.BillHistoryDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Lịch Sử Hóa Đơn" Height="700" Width="1410"
+        WindowStartupLocation="CenterScreen">
+    
+    <Window.Resources>
+        <Style x:Key="HeaderTextStyle" TargetType="TextBlock">
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Foreground" Value="#2C3E50"/>
+        </Style>
+        
+        <Style x:Key="StatusButtonStyle" TargetType="Button">
+            <Setter Property="Padding" Value="8,4"/>
+            <Setter Property="Margin" Value="2"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+        
+        <Style x:Key="PendingStatusStyle" TargetType="Button" BasedOn="{StaticResource StatusButtonStyle}">
+            <Setter Property="Background" Value="#FFF3CD"/>
+            <Setter Property="Foreground" Value="#856404"/>
+        </Style>
+        
+        <Style x:Key="PaidStatusStyle" TargetType="Button" BasedOn="{StaticResource StatusButtonStyle}">
+            <Setter Property="Background" Value="#D4EDDA"/>
+            <Setter Property="Foreground" Value="#155724"/>
+        </Style>
+        
+        <Style x:Key="OverdueStatusStyle" TargetType="Button" BasedOn="{StaticResource StatusButtonStyle}">
+            <Setter Property="Background" Value="#F8D7DA"/>
+            <Setter Property="Foreground" Value="#721C24"/>
+        </Style>
+        
+        <Style x:Key="RightAlignStyle" TargetType="TextBlock">
+            <Setter Property="TextAlignment" Value="Right"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+        </Style>
+    </Window.Resources>
+    
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Header -->
+        <TextBlock Grid.Row="0" Text="QUẢN LÝ HÓA ĐƠN" 
+                   Style="{StaticResource HeaderTextStyle}" 
+                   FontSize="18" HorizontalAlignment="Center" Margin="0,0,0,15"/>
+        
+        <!-- Filter Section -->
+        <Border Grid.Row="1" Background="#F8F9FA" Padding="15" CornerRadius="8" Margin="0,0,0,15">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <TextBlock Grid.Column="0" Text="Trạng thái:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                <ComboBox Grid.Column="1" x:Name="cmbStatusFilter" SelectionChanged="StatusFilter_Changed">
+                    <ComboBoxItem Tag="All" IsSelected="True">Tất cả</ComboBoxItem>
+                    <ComboBoxItem Tag="Pending">Chờ thanh toán</ComboBoxItem>
+                    <ComboBoxItem Tag="Paid">Đã thanh toán</ComboBoxItem>
+                    <ComboBoxItem Tag="Overdue">Quá hạn</ComboBoxItem>
+                    <ComboBoxItem Tag="Partial">Thanh toán một phần</ComboBoxItem>
+                </ComboBox>
+                
+                <TextBlock Grid.Column="2" Text="Tháng:" VerticalAlignment="Center" Margin="15,0,10,0"/>
+                <ComboBox Grid.Column="3" x:Name="cmbMonthFilter" SelectionChanged="MonthFilter_Changed">
+                    <ComboBoxItem Tag="All" IsSelected="True">Tất cả</ComboBoxItem>
+                    <ComboBoxItem Tag="1">Tháng 1</ComboBoxItem>
+                    <ComboBoxItem Tag="2">Tháng 2</ComboBoxItem>
+                    <ComboBoxItem Tag="3">Tháng 3</ComboBoxItem>
+                    <ComboBoxItem Tag="4">Tháng 4</ComboBoxItem>
+                    <ComboBoxItem Tag="5">Tháng 5</ComboBoxItem>
+                    <ComboBoxItem Tag="6">Tháng 6</ComboBoxItem>
+                    <ComboBoxItem Tag="7">Tháng 7</ComboBoxItem>
+                    <ComboBoxItem Tag="8">Tháng 8</ComboBoxItem>
+                    <ComboBoxItem Tag="9">Tháng 9</ComboBoxItem>
+                    <ComboBoxItem Tag="10">Tháng 10</ComboBoxItem>
+                    <ComboBoxItem Tag="11">Tháng 11</ComboBoxItem>
+                    <ComboBoxItem Tag="12">Tháng 12</ComboBoxItem>
+                </ComboBox>
+                
+                <TextBlock Grid.Column="4" Text="Năm:" VerticalAlignment="Center" Margin="15,0,10,0"/>
+                <ComboBox Grid.Column="5" x:Name="cmbYearFilter" SelectionChanged="YearFilter_Changed">
+                    <ComboBoxItem Tag="All" IsSelected="True">Tất cả</ComboBoxItem>
+                    <ComboBoxItem Tag="2024">2024</ComboBoxItem>
+                    <ComboBoxItem Tag="2025">2025</ComboBoxItem>
+                </ComboBox>
+                
+                <Button Grid.Column="7" Content="🔄 Làm mới" Click="RefreshButton_Click" 
+                        Background="#007BFF" Foreground="White" Padding="10,5" 
+                        BorderThickness="0"/>
+            </Grid>
+        </Border>
+        
+        <!-- Bills DataGrid -->
+        <DataGrid Grid.Row="2" x:Name="dgBills" AutoGenerateColumns="False" 
+                  RowHeight="35" GridLinesVisibility="Horizontal" 
+                  HeadersVisibility="Column" CanUserAddRows="False" 
+                  CanUserDeleteRows="False" IsReadOnly="True"
+                  AlternatingRowBackground="#F8F9FA">
+            
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Mã HĐ" Binding="{Binding BillId}" Width="80"/>
+                <DataGridTextColumn Header="Hợp đồng" Binding="{Binding Contract.ContractNumber}" Width="100"/>
+                <DataGridTextColumn Header="Phòng" Binding="{Binding Contract.RoomNumber}" Width="80"/>
+                <DataGridTextColumn Header="Khách hàng" Binding="{Binding Contract.CustomerName}" Width="150"/>
+                <DataGridTextColumn Header="Tháng/Năm" Binding="{Binding BillPeriod}" Width="100"/>
+                <DataGridTextColumn Header="Tiền phòng" Binding="{Binding FormattedRoomRent}" Width="100" ElementStyle="{StaticResource RightAlignStyle}"/>
+                <DataGridTextColumn Header="Tiền điện" Binding="{Binding FormattedElectricityCost}" Width="100" ElementStyle="{StaticResource RightAlignStyle}"/>
+                <DataGridTextColumn Header="Tiền nước" Binding="{Binding FormattedWaterCost}" Width="100" ElementStyle="{StaticResource RightAlignStyle}"/>
+                <DataGridTextColumn Header="Phí khác" Binding="{Binding FormattedOtherCharges}" Width="100" ElementStyle="{StaticResource RightAlignStyle}"/>
+                <DataGridTextColumn Header="Tổng tiền" Binding="{Binding FormattedTotal}" Width="120" ElementStyle="{StaticResource RightAlignStyle}"/>
+                <DataGridTextColumn Header="Hạn thanh toán" Binding="{Binding FormattedDueDate}" Width="110"/>
+                
+                <DataGridTemplateColumn Header="Trạng thái" Width="120">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Content="{Binding StatusText}" Tag="{Binding}" 
+                                    Click="UpdateStatus_Click" ToolTip="Nhấn để cập nhật trạng thái">
+                                <Button.Style>
+                                    <Style TargetType="Button" BasedOn="{StaticResource StatusButtonStyle}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding BillStatus}" Value="Pending">
+                                                <Setter Property="Background" Value="#FFF3CD"/>
+                                                <Setter Property="Foreground" Value="#856404"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding BillStatus}" Value="Paid">
+                                                <Setter Property="Background" Value="#D4EDDA"/>
+                                                <Setter Property="Foreground" Value="#155724"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding BillStatus}" Value="Overdue">
+                                                <Setter Property="Background" Value="#F8D7DA"/>
+                                                <Setter Property="Foreground" Value="#721C24"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding BillStatus}" Value="Partial">
+                                                <Setter Property="Background" Value="#CCE5FF"/>
+                                                <Setter Property="Foreground" Value="#004085"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                
+                <DataGridTemplateColumn Header="Thao tác" Width="120">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Button Content="📄" ToolTip="Xem chi tiết" 
+                                        Click="ViewDetails_Click" Tag="{Binding}"
+                                        Background="#17A2B8" Foreground="White" 
+                                        Width="30" Height="25" Margin="2" 
+                                        BorderThickness="0" FontSize="12"/>
+                                <Button Content="🖨️" ToolTip="In hóa đơn" 
+                                        Click="PrintBill_Click" Tag="{Binding}"
+                                        Background="#28A745" Foreground="White" 
+                                        Width="30" Height="25" Margin="2" 
+                                        BorderThickness="0" FontSize="12"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+        
+        <!-- Summary -->
+        <Border Grid.Row="3" Background="#E9ECEF" Padding="15" CornerRadius="8" Margin="0,15,0,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                
+                <TextBlock Grid.Column="0" x:Name="txtBillSummary" 
+                           Text="Tổng: 0 hóa đơn" FontWeight="Bold"/>
+                <TextBlock Grid.Column="1" x:Name="txtRevenueSummary" 
+                           Text="Doanh thu: 0 VNĐ" FontWeight="Bold" 
+                           HorizontalAlignment="Right"/>
+            </Grid>
+        </Border>
+        
+        <!-- Buttons -->
+        <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,15,0,0">
+            <Button Content="Xuất Excel" Click="ExportExcel_Click" 
+                    Background="#28A745" Foreground="White" Padding="15,8" 
+                    Margin="0,0,10,0" BorderThickness="0"/>
+            <Button Content="Đóng" Click="CloseButton_Click" 
+                    Background="#6C757D" Foreground="White" Padding="15,8" 
+                    BorderThickness="0"/>
+        </StackPanel>
+    </Grid>
+</Window>

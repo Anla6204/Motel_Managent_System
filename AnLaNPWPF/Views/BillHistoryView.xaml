@@ -1,0 +1,422 @@
+<UserControl x:Class="AnLaNPWPF.Views.BillHistoryView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="800" d:DesignWidth="1200">
+    
+    <UserControl.Resources>
+        <Style x:Key="ModernButton" TargetType="Button">
+            <Setter Property="Background" Value="#4A90E2"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="15,8"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="5">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#357ABD"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#2E6DA4"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SuccessButton" TargetType="Button" BasedOn="{StaticResource ModernButton}">
+            <Setter Property="Background" Value="#27AE60"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#219A52"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="WarningButton" TargetType="Button" BasedOn="{StaticResource ModernButton}">
+            <Setter Property="Background" Value="#F39C12"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#E67E22"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="InfoButton" TargetType="Button" BasedOn="{StaticResource ModernButton}">
+            <Setter Property="Background" Value="#17A2B8"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#138496"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" Background="White" Padding="20" Margin="10,10,10,5" CornerRadius="8">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <StackPanel Grid.Column="0" Orientation="Vertical">
+                    <TextBlock Text="💰 Quản Lý Hóa Đơn" FontSize="24" FontWeight="Bold" 
+                               Foreground="#2C3E50" Margin="0,0,0,5"/>
+                    <TextBlock x:Name="txtSummary" Text="Quản lý tất cả hóa đơn thanh toán trong hệ thống" 
+                               FontSize="14" Foreground="#7F8C8D"/>
+                </StackPanel>
+
+                <Button Grid.Column="1" x:Name="btnRefresh" Content="🔄 Làm mới" 
+                        Style="{StaticResource ModernButton}" Click="RefreshButton_Click"/>
+            </Grid>
+        </Border>
+
+        <!-- Filter and Actions -->
+        <Border Grid.Row="1" Background="White" Padding="15" Margin="10,5,10,5" CornerRadius="8">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="10"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- First Row: Status and Search -->
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" Orientation="Horizontal">
+                        <TextBlock Text="Lọc theo trạng thái:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                        <ComboBox x:Name="cmbStatusFilter" Width="150" Margin="0,0,15,0" 
+                                  SelectionChanged="StatusFilter_Changed">
+                            <ComboBoxItem Content="Tất cả" IsSelected="True" Tag="All"/>
+                            <ComboBoxItem Content="🟡 Chờ thanh toán" Tag="Pending"/>
+                            <ComboBoxItem Content="🟢 Đã thanh toán" Tag="Paid"/>
+                            <ComboBoxItem Content="🔴 Quá hạn" Tag="Overdue"/>
+                            <ComboBoxItem Content="🔵 Thanh toán một phần" Tag="Partial"/>
+                        </ComboBox>
+
+                        <TextBlock Text="Tìm kiếm:" VerticalAlignment="Center" Margin="15,0,10,0"/>
+                        <TextBox x:Name="txtSearch" Width="200" Padding="8" 
+                                 TextChanged="SearchBox_TextChanged"
+                                 ToolTip="Tìm theo số hóa đơn, tên khách hàng hoặc số phòng"/>
+                    </StackPanel>
+
+                    <Button Grid.Column="1" x:Name="btnGenerateBills" Content="📝 Tạo HĐ Tháng" 
+                            Style="{StaticResource SuccessButton}" Click="GenerateBills_Click"/>
+                    
+                    <Button Grid.Column="2" x:Name="btnExport" Content="📤 Xuất Excel" 
+                            Style="{StaticResource InfoButton}" Click="ExportExcel_Click"/>
+                </Grid>
+
+                <!-- Second Row: Month/Year Filter -->
+                <Grid Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Column="0" Text="📅 Lọc theo tháng:" VerticalAlignment="Center" 
+                               FontWeight="SemiBold" Foreground="#495057"/>
+                    <ComboBox Grid.Column="1" x:Name="cmbMonthFilter" Height="35" 
+                              SelectionChanged="MonthFilter_Changed">
+                        <ComboBoxItem Content="Tất cả tháng" IsSelected="True" Tag="All"/>
+                        <ComboBoxItem Content="Tháng 1" Tag="1"/>
+                        <ComboBoxItem Content="Tháng 2" Tag="2"/>
+                        <ComboBoxItem Content="Tháng 3" Tag="3"/>
+                        <ComboBoxItem Content="Tháng 4" Tag="4"/>
+                        <ComboBoxItem Content="Tháng 5" Tag="5"/>
+                        <ComboBoxItem Content="Tháng 6" Tag="6"/>
+                        <ComboBoxItem Content="Tháng 7" Tag="7"/>
+                        <ComboBoxItem Content="Tháng 8" Tag="8"/>
+                        <ComboBoxItem Content="Tháng 9" Tag="9"/>
+                        <ComboBoxItem Content="Tháng 10" Tag="10"/>
+                        <ComboBoxItem Content="Tháng 11" Tag="11"/>
+                        <ComboBoxItem Content="Tháng 12" Tag="12"/>
+                    </ComboBox>
+
+                    <TextBlock Grid.Column="3" Text="Năm:" VerticalAlignment="Center" 
+                               FontWeight="SemiBold" Foreground="#495057"/>
+                    <ComboBox Grid.Column="4" x:Name="cmbYearFilter" Height="35" 
+                              SelectionChanged="YearFilter_Changed"/>
+
+                    <Button Grid.Column="6" Content="🔄 Làm mới" Height="35" Padding="15,8"
+                            Background="#17A2B8" Foreground="White" BorderThickness="0"
+                            Click="RefreshFilter_Click" ToolTip="Reset tất cả bộ lọc"/>
+
+                    <TextBlock Grid.Column="7" x:Name="txtFilterInfo" Text="" 
+                               VerticalAlignment="Center" HorizontalAlignment="Right"
+                               FontStyle="Italic" FontSize="12" Foreground="#6C757D"/>
+                </Grid>
+            </Grid>
+        </Border>
+
+        <!-- Bills List -->
+        <Border Grid.Row="2" Background="White" Margin="10,5,10,5" CornerRadius="8" Padding="5">
+            <DataGrid x:Name="dgBills" AutoGenerateColumns="False" 
+                      CanUserAddRows="False" CanUserDeleteRows="False"
+                      GridLinesVisibility="Horizontal" HeadersVisibility="Column"
+                      AlternatingRowBackground="#F8F9FA" RowBackground="White"
+                      FontSize="12" BorderThickness="0" Margin="5">
+                
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Mã HĐ" Binding="{Binding BillId}" Width="70" IsReadOnly="True">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                <Setter Property="FontWeight" Value="Bold"/>
+                                <Setter Property="Foreground" Value="#2C3E50"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    
+                    <DataGridTextColumn Header="Tháng/Năm" Binding="{Binding BillPeriod}" Width="90" IsReadOnly="True">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                <Setter Property="FontWeight" Value="Medium"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    
+                    <DataGridTextColumn Header="Phòng" Binding="{Binding Contract.RoomNumber}" Width="70" IsReadOnly="True">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                <Setter Property="FontWeight" Value="Bold"/>
+                                <Setter Property="Foreground" Value="#E74C3C"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    
+                    <DataGridTextColumn Header="Khách hàng" Binding="{Binding Contract.CustomerName}" Width="180" IsReadOnly="True">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="HorizontalAlignment" Value="Left"/>
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                <Setter Property="Margin" Value="10,0,0,0"/>
+                                <Setter Property="FontWeight" Value="Medium"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    
+                    <DataGridTextColumn Header="Tổng tiền" Binding="{Binding FormattedTotal}" Width="130" IsReadOnly="True">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="HorizontalAlignment" Value="Right"/>
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                <Setter Property="Margin" Value="0,0,10,0"/>
+                                <Setter Property="FontWeight" Value="Bold"/>
+                                <Setter Property="Foreground" Value="#27AE60"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    
+                    <DataGridTextColumn Header="Hạn TT" Binding="{Binding FormattedDueDate}" Width="100" IsReadOnly="True">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                <Setter Property="FontWeight" Value="Medium"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    
+                    <DataGridTemplateColumn Header="Trạng thái" Width="140">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Grid Margin="5,3">
+                                    <Border x:Name="StatusBorder" CornerRadius="15" Padding="12,6" 
+                                            HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <TextBlock x:Name="StatusText" Text="{Binding StatusText}" 
+                                                   FontWeight="Bold" FontSize="10" 
+                                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </Grid>
+                                <DataTemplate.Triggers>
+                                    <DataTrigger Binding="{Binding BillStatus}" Value="Pending">
+                                        <Setter TargetName="StatusBorder" Property="Background" Value="#FFF3CD"/>
+                                        <Setter TargetName="StatusText" Property="Foreground" Value="#856404"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding BillStatus}" Value="Paid">
+                                        <Setter TargetName="StatusBorder" Property="Background" Value="#D4EDDA"/>
+                                        <Setter TargetName="StatusText" Property="Foreground" Value="#155724"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding BillStatus}" Value="Overdue">
+                                        <Setter TargetName="StatusBorder" Property="Background" Value="#F8D7DA"/>
+                                        <Setter TargetName="StatusText" Property="Foreground" Value="#721C24"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding BillStatus}" Value="Partial">
+                                        <Setter TargetName="StatusBorder" Property="Background" Value="#CCE5FF"/>
+                                        <Setter TargetName="StatusText" Property="Foreground" Value="#004085"/>
+                                    </DataTrigger>
+                                </DataTemplate.Triggers>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    
+                    <DataGridTemplateColumn Header="Thao tác" Width="220">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="8,0">
+                                    <Button Content="👁️ Xem" ToolTip="Xem chi tiết hóa đơn" 
+                                            Margin="3,2" Padding="8,4" Width="60" Height="28"
+                                            Background="#17A2B8" Foreground="White" BorderThickness="0"
+                                            FontSize="10" FontWeight="Medium"
+                                            Click="ViewDetails_Click" Tag="{Binding}">
+                                        <Button.Style>
+                                            <Style TargetType="Button">
+                                                <Setter Property="Background" Value="#17A2B8"/>
+                                                <Setter Property="Foreground" Value="White"/>
+                                                <Setter Property="BorderThickness" Value="0"/>
+                                                <Setter Property="Cursor" Value="Hand"/>
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="Button">
+                                                            <Border Background="{TemplateBinding Background}" 
+                                                                    CornerRadius="4" Padding="{TemplateBinding Padding}">
+                                                                <ContentPresenter HorizontalAlignment="Center" 
+                                                                                  VerticalAlignment="Center"/>
+                                                            </Border>
+                                                            <ControlTemplate.Triggers>
+                                                                <Trigger Property="IsMouseOver" Value="True">
+                                                                    <Setter Property="Background" Value="#138496"/>
+                                                                </Trigger>
+                                                            </ControlTemplate.Triggers>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
+                                    
+                                    <Button Content="✏️ Sửa" ToolTip="Cập nhật trạng thái thanh toán" 
+                                            Margin="3,2" Padding="8,4" Width="60" Height="28"
+                                            Background="#FFC107" Foreground="#212529" BorderThickness="0"
+                                            FontSize="10" FontWeight="Medium"
+                                            Click="UpdateStatus_Click" Tag="{Binding}">
+                                        <Button.Style>
+                                            <Style TargetType="Button">
+                                                <Setter Property="Background" Value="#FFC107"/>
+                                                <Setter Property="Foreground" Value="#212529"/>
+                                                <Setter Property="BorderThickness" Value="0"/>
+                                                <Setter Property="Cursor" Value="Hand"/>
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="Button">
+                                                            <Border Background="{TemplateBinding Background}" 
+                                                                    CornerRadius="4" Padding="{TemplateBinding Padding}">
+                                                                <ContentPresenter HorizontalAlignment="Center" 
+                                                                                  VerticalAlignment="Center"/>
+                                                            </Border>
+                                                            <ControlTemplate.Triggers>
+                                                                <Trigger Property="IsMouseOver" Value="True">
+                                                                    <Setter Property="Background" Value="#E0A800"/>
+                                                                </Trigger>
+                                                            </ControlTemplate.Triggers>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+
+                <DataGrid.RowStyle>
+                    <Style TargetType="DataGridRow">
+                        <Setter Property="Height" Value="50"/>
+                        <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                        <Setter Property="BorderBrush" Value="#E9ECEF"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#E3F2FD"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Background" Value="#BBDEFB"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.RowStyle>
+
+                <DataGrid.ColumnHeaderStyle>
+                    <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="Background" Value="#34495E"/>
+                        <Setter Property="Foreground" Value="White"/>
+                        <Setter Property="FontWeight" Value="Bold"/>
+                        <Setter Property="FontSize" Value="12"/>
+                        <Setter Property="Height" Value="45"/>
+                        <Setter Property="Padding" Value="10,0"/>
+                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                        <Setter Property="VerticalContentAlignment" Value="Center"/>
+                        <Setter Property="BorderThickness" Value="0,0,1,0"/>
+                        <Setter Property="BorderBrush" Value="#2C3E50"/>
+                    </Style>
+                </DataGrid.ColumnHeaderStyle>
+
+                <DataGrid.CellStyle>
+                    <Style TargetType="DataGridCell">
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="Padding" Value="5"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="Foreground" Value="Black"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.CellStyle>
+            </DataGrid>
+        </Border>
+
+        <!-- Status Info -->
+        <Border Grid.Row="3" Background="#34495E" Padding="15,10" Margin="10,5,10,10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <TextBlock Grid.Column="0" x:Name="txtBillCount" Text="Tổng: 0 hóa đơn" 
+                           Foreground="White" FontSize="12" VerticalAlignment="Center"/>
+                
+                <TextBlock Grid.Column="1" x:Name="txtStatusInfo" Text="Sẵn sàng" 
+                           Foreground="#BDC3C7" FontSize="12" VerticalAlignment="Center"/>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>
